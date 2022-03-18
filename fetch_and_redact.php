@@ -23,7 +23,7 @@ function redact_data(array $value) : array {
     return $value;
 };
 
-function fetch_data(string $user = 'dev_test_user',string $pass = 'V8(Zp7K9Ab94uRgmmx2gyuT.') :void { //Returns nothing
+function fetch_data(string $user = 'dev_test_user',string $pass = 'V8(Zp7K9Ab94uRgmmx2gyuT.') :void { //Returns nothing - though it will throw an exception if there is an issue with the CURL request
     $host = 'https://tst-api.feeditback.com/exam.users';
     $ch = curl_init($host);
     curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
@@ -31,7 +31,12 @@ function fetch_data(string $user = 'dev_test_user',string $pass = 'V8(Zp7K9Ab94u
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     $clear_data = JSON_decode(curl_exec($ch),true);
+    if (curl_errno($ch)) {
+        echo 'Error:' . curl_error($ch);
+        return;
+    }
     curl_close($ch);
+    
     $new_redacted = [];
     foreach ($clear_data as $clear) { //Loop over and redact data and add to new array.
         $new_redacted[] = redact_data($clear);
