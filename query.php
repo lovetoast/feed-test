@@ -39,7 +39,7 @@ function query(string $field, string $value, bool $exact = TRUE) :void
         echo '<br><b> Invalid filter<br></b>';
         return;
     }
-    if (in_array($field,$not_partial) && !$exact) {
+    if (in_array($field,$not_partial) && !$exact) { //Do not allow partial search on email and colours - probably does not make sense - unless the colours are match via RGB or the GD library which is outside of the scope
         echo '<br><b> Cannot partial on  ' . $field . ' for ' . $value . ' <br></b>';
         return;
 
