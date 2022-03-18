@@ -37,3 +37,13 @@ FROM   survey_responses s
          ON c.id = b.company_id AND c.status =1 
 GROUP  BY branch_id,
           Date_format(s.visit_datetime, '%m-%y');
+
+/*
+
+Left outer joins are used to ensure all branches are retrieved.
+
+We put the queries in the join to ensure integrity of the outer joins.
+
+If we added a where query it would eliminate outer joins.
+
+*/

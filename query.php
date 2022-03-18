@@ -23,16 +23,12 @@ function group_array(array $user_data,string $common_key) : array {
 
         }
         $total_ages += $record['age']; // Find total ages, could have used a single line function here, but given we are looping regardless, it is simpler to just put addition here.
-
-
     }
     $report_data = ['words'=>$about_words,'common_colours'=>array_keys($output_array, max($output_array)),'average_age'=>number_format((float)$total_ages/count($user_data), 2, '.', '')];
-    return $report_data;
-
-    
+    return $report_data;  
 
 }
-
+//We could have also inverted this and checked for the value of $exact and then went through the $field queried
 function query(string $field, string $value, bool $exact = TRUE) :void 
 {
     $user_json_data = JSON_decode(file_get_contents("user_data.json"),true);
@@ -40,7 +36,13 @@ function query(string $field, string $value, bool $exact = TRUE) :void
     $can_partial_stripos = ['id','status','first_name','last_name','company','phone','about','address'];
     $not_partial = ['email','eye_color','favorite_color'];
     if (!in_array($field,$allowed_fields)) {
-        throw new Exception('Invalid filter'); //Throw error is not an allowable field.
+        echo '<br><b> Invalid filter<br></b>';
+        return;
+    }
+    if (in_array($field,$not_partial) && !$exact) {
+        echo '<br><b> Cannot partial on  ' . $field . ' for ' . $value . ' <br></b>';
+        return;
+
     }
     $results = array_filter($user_json_data,function($user) use ($field,$can_partial_stripos,$allowed_fields,$not_partial,$user_json_data,$exact,$value)  {
         if ($field == 'created') { //Partial match on created involves day check
@@ -63,35 +65,37 @@ function query(string $field, string $value, bool $exact = TRUE) :void
         } else if (in_array($field,$not_partial)) { //Email - check against salt
             if ($exact) {
                 if ($field == 'email')
-                    return $user['email'] == hash('sha256',$value . $user['salt']); //
+                    return $user['email'] == hash('sha256',strtolower($value) . $user['salt']); //
                 else   
                     return $user[$field] == $value;
-            } else {
-                throw new Exception('Cannot partial search on that field'); //Can't partial match these fields
-            }
+            } 
         } 
     });
+    $exact_str = $exact ? 'Exact search: ' : 'Partial search on: ';
     if ($results) {
+        echo '<b><br>' . $exact_str . 'on ' . $field . ' for ' . $value . ' :</b><br>';
         foreach ($results as $result) {
             echo '<br>' . $result['first_name'] . ' ' . $result['last_name']; // Echo name
         }
+    } else {
+        echo '<b><br>No data for: ' . $exact_str . 'on ' . $field . ' for ' . $value . ' :</b><br>';
+
     }
-    
+    echo '<br>';
 }
 
 function report()
 {
-    $user_json_data = JSON_decode(file_get_contents("user_data.json"),true);
-    
+    $user_json_data = JSON_decode(file_get_contents("users.json"),true); //Not sure why we are hyphenating now rather than underscore - but this was in the md file
     $report_data = group_array($user_json_data,'favorite_colour');
     usort($user_json_data, function($a, $b) {
         return strtotime($a['created']) - strtotime($b['created']);
     });
-    echo "<pre>";
     $report_data['oldest_user'] = $user_json_data[0]['first_name'] . ' ' . $user_json_data[0]['last_name'];
     $report_data['newest_user'] = $user_json_data[array_key_last($user_json_data)]['first_name'] . ' ' . $user_json_data[array_key_last($user_json_data)]['last_name'];
 
-    print_r ($report_data);
+    $user_file = fopen("users-report.json", "w");
+    fwrite($user_file,JSON_encode($report_data));
 
 
 
@@ -108,11 +112,5 @@ query('email', 'mcconnellbranch@zytrek.com');
 query('email', 'ryansand@xandem.com');
 query('email', 'edwinachang', FALSE);
 
-//report();
+report();
 
-
-//Finish colours code
-// Comment fetch and redact
-//Comment query
-//Test query code and write it
-// Fix sql file
