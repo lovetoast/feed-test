@@ -50,3 +50,23 @@ We put the queries in the join to ensure integrity of the outer joins.
 If we added a where query it would eliminate outer joins.
 
 */
+
+Returns:
+
+```
+[
+{"type":"header","version":"5.1.1","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"test"},
+{"type":"table","name":"b","database":"test","data":
+[
+{"id":"5","Company name":"Frisco House of Pancakes","Branch name":"Frisco House","Month-Year":"N\/A","Tripadvisor total":"0","Tripadvisor average":null,"Facebook total":"0","Facebook average":null,"Google total":"0","Google average":null,"Total":"1","Total average":null},
+{"id":"1","Company name":"Lounges","Branch name":"Marambi Lounge","Month-Year":"01-20","Tripadvisor total":"0","Tripadvisor average":null,"Facebook total":"1","Facebook average":"4.0000000","Google total":"0","Google average":null,"Total":"1","Total average":"4.0000000"},
+{"id":"1","Company name":"Lounges","Branch name":"Marambi Lounge","Month-Year":"07-21","Tripadvisor total":"0","Tripadvisor average":null,"Facebook total":"0","Facebook average":null,"Google total":"2","Google average":"3.5000000","Total":"2","Total average":"3.5000000"},
+{"id":"2","Company name":"Lounges","Branch name":"Cabot Lounge","Month-Year":"07-19","Tripadvisor total":"0","Tripadvisor average":null,"Facebook total":"1","Facebook average":"5.0000000","Google total":"0","Google average":null,"Total":"1","Total average":"5.0000000"},
+{"id":"2","Company name":"Lounges","Branch name":"Cabot Lounge","Month-Year":"09-21","Tripadvisor total":"0","Tripadvisor average":null,"Facebook total":"0","Facebook average":null,"Google total":"1","Google average":"5.0000000","Total":"1","Total average":"5.0000000"}
+]
+}
+]
+
+
+```
