@@ -49,6 +49,8 @@ We put the queries in the join to ensure integrity of the outer joins.
 
 If we added a where query it would eliminate outer joins.
 
+My method to find the summarised review is quite cumbersome, as I do not believe MySQL has a PIVOT function that is easily usable for this purpose.
+
 */
 
 Returns:
